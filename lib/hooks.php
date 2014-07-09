@@ -120,7 +120,7 @@ function au_subgroups_groups_router($hook, $type, $return, $params) {
   if ($return['segments'][0] == 'subgroups') {
 	elgg_load_library('elgg:groups');
 	$group = get_entity($return['segments'][2]);
-	if (!elgg_instanceof($group, 'group') || (($group->subgroups_enable == 'no') && ($return['segments'][1] != "delete"))) {
+	if (!elgg_instanceof($group, 'group') || ($group->subgroups_enable == 'no')) {
 	  return $return;
 	}
 	
@@ -132,20 +132,24 @@ function au_subgroups_groups_router($hook, $type, $return, $params) {
         set_input('au_subgroup', true);
         set_input('au_subgroup_parent_guid', $group->guid);
         if (include(elgg_get_plugins_path() . 'au_subgroups/pages/add.php')) {
+          //if dont exit, the page will show site '' page
+          exit;
           return true;
         }
         break;
         
       case 'delete':
         if (include(elgg_get_plugins_path() . 'au_subgroups/pages/delete.php')) {
+          exit;
           return true;
         }
         break;
 		
 	  case 'list':
-		if (include(elgg_get_plugins_path() . 'au_subgroups/pages/list.php')) {
-		  return true;
-		}
+  		if (include(elgg_get_plugins_path() . 'au_subgroups/pages/list.php')) {
+  		    exit;
+        return true;
+  		}
 		break;
     }
   }
@@ -202,21 +206,10 @@ function au_subgroups_titlemenu($h, $t, $r, $p) {
 	  return $r;
 	}
 	
-	$actions = array();
-	$url = elgg_get_site_url() . "action/groups/join?group_guid={$parent->getGUID()}";
-		$url = elgg_add_action_tokens_to_url($url);
-		if ($parent->isPublicMembership() || $parent->canEdit()) {
-			$actions[$url] = 'groups:join';
-		} else {
-			// request membership
-			$actions[$url] = 'groups:joinrequest';
-		}
-	
 	// we're not a member, so we need to remove any 'join'/'request membership' links
 	foreach ($r as $key => $item) {
 	  if (in_array($item->getName(), array('groups:join', 'groups:joinrequest'))) {
-		$r[$key]->setHref($url);
-		$r[$key]->setText(elgg_echo('subgroups:parent:need_join'));
+		unset($r[$key]);
 	  }
 	}
 	

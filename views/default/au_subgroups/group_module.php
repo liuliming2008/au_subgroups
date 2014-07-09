@@ -27,8 +27,7 @@ if (!$content) {
 	$content = '<p>' . elgg_echo('au_subgroups:nogroups') . '</p>';
 }
 
-$any_member = ($group->subgroups_members_create_enable != 'no');
- if (($any_member && $group->isMember()) || $group->canEdit()) {
+if ($group->canEdit()) {
   $new_link = elgg_view('output/url', array(
     'href' => "groups/subgroups/add/$group->guid",
     'text' => elgg_echo('au_subgroups:add:subgroup'),

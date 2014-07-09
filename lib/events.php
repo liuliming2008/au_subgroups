@@ -215,7 +215,7 @@ function au_subgroups_pagesetup() {
 		  'name' => 'add_subgroup',
 		  'href' => "groups/subgroups/add/{$group->guid}",
 		  'text' => elgg_echo('au_subgroups:add:subgroup'),
-		  'class' => 'elgg-button elgg-button-action'
+		  'link_class' => 'elgg-button elgg-button-action'
 		));
 	  }
     }
